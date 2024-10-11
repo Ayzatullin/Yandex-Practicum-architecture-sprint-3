@@ -1,0 +1,60 @@
+@startuml
+title SmartHome Component Diagram
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+
+Container_Boundary(SmartHome, "SmartHome System") {
+  Container(WebApps, "Web Application", "Some language", "Обрабатывает запросы, взаимодействует с User")
+  Container(Api, "API Application", "Java", "Управляет состоянием домовых систем")
+  Container(Databases, "Databases", , "Базы данных микросервисов")
+}
+
+Container(Api, "API Application", "Java") {
+  Component(ApiGateway, "Api Gateway", "Маршрутизация запросов, управление доступом")
+  Component(Kafka, "Kafka", "Запись логов состояний датчиков")
+  Component(RabbitMQ, "RabbitMQ", "Отправка очередей на систему уведомлений")
+  Component(AuthCrl, "Auth Controller", "Авторизация и аутентификация юзеров")
+  Component(HomeCrl, "Home Controller", "Модель дома")
+  Component(DeviceCrl, "Device Controller", "Управление устройствами")
+  Component(TelemetryCrl, "Telemetry Controller", "Управление телеметрией")
+  Component(AlertCrl, "Alert Controller", "Уведомление юзеров о статусах")
+}
+
+Container(Databases, "Databases") {
+  Component(userDB, "User DB", "PostgreSQL", "Данные владельцев домов")
+  Component(homeDB, "Home DB", "MongoDB", "Данные домов")
+  Component(deviceDB, "Device DB", "PostgreSQL", "БД управления устройствами")
+  Component(TelemetryDB, "Telemetry DB", "PostgreSQL", "Состояния датчиков, замеры, статусы")
+  Component(S3, "VideoDB", "S3", "Хранение видеозаписей")
+}
+
+System_Ext(Devices, "Devices", "Устройства управления системами дома")
+System_Ext(Sensors, "Sensors", "Датчики температуры, света")
+System_Ext(Alert, "Alerts", "Отправка push и sms")
+
+
+Rel(WebApps,ApiGateway,"Запросы на выполнение действий")
+Rel(ApiGateway,AuthCrl, "REST","Проверка прав и аутентицификация юзера")
+Rel(AuthCrl,userDB, "SQL","Сверяет логины и пароли")
+
+Rel(ApiGateway,HomeCrl, "REST", "Запросы на получение информации по комнатам")
+Rel(HomeCrl,homeDB, "SQL", "Чтение/запись данных: № датчика в комнате 3")
+
+Rel(ApiGateway,DeviceCrl, "REST", "Запросы на изменение состояний устройств")
+Rel(DeviceCrl,deviceDB, "SQL", "Чтение/запись данных")
+Rel(DeviceCrl, Devices, "", "Задачи на действия")
+Rel(DeviceCrl, TelemetryCrl, "REST", "Запрашивает данные по состояниям")
+Rel(DeviceCrl, RabbitMQ, "REST", "Отправляет изменные статусы устройств")
+Rel(AlertCrl, RabbitMQ, "ASync", "Вычитывает сообщения")
+Rel(AlertCrl, Alert, "REST", "Отправляет уведомления")
+
+Rel(ApiGateway, TelemetryCrl,"Reads/Writes user data")
+Rel(TelemetryCrl, TelemetryDB, "SQL", "Чтение/запись данных")
+Rel(Sensors, Kafka, "Async", "Запись логов событий и состояний")
+Rel(Sensors, TelemetryCrl, "Async", "Передача видеозаписей")
+Rel(TelemetryCrl, Kafka, "Async", "Забирает данные логов")
+Rel(TelemetryCrl, S3, "", "Читает/редактирует данные")
+
+@enduml

@@ -1,0 +1,40 @@
+@startuml
+title SmartHome Container Diagram
+
+top to bottom direction
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+Person(user, "User", "Владелец дома, юзер системы")
+Person(admin, "Admin", "Сотрудник SmartHome")
+
+System(SmartHome, "SmartHome System", "Система умного дома")
+
+System_Ext(heatingSystem, "Heating System", "Система отопления")
+System_Ext(lightSystem, "Light System", "Система упавления светом")
+System_Ext(doorSystem, "Door System", "Система управления воротами")
+System_Ext(surveillanceSystem, "Video surveillance System", "Система видеонаблюдения")
+System_Ext(sensor, "Sensors", "Датчики температуры, света")
+System_Ext(alert, "Push and sms", "Отправка push и сообщений")
+
+Container_Boundary(SmartHome, "SmartHome System") {
+  Container(WebApps, "Web Application", "Some language", "Обрабатывает запросы, взаимодействует с User")
+  Container(Monitoring, "Monitoring System", "Grafana", "Сбор данных, выявление проблем и ошибок")
+  Container(Api, "API Application", "Java", "Управляет системами и сбором данных")
+  Container(Database, "Database", "PostgreSQL", "Содержит все данные о состоянии систем и датчиков")
+}
+
+Rel(user, WebApps, "Отправляет запросы на управлением домом")
+Rel(admin, Monitoring,"Следит за состоянием системы")
+Rel(WebApps, Api,"Отправляет http запросы на изменение системы")
+Rel(Monitoring, Api,"Собирает данные о состоянии системы")
+Rel(sensor, Api, "Отправка замеров/данных")
+
+Rel(Api,Database,"Отправляет запросы на чтение/запись данных")
+Rel(Api,heatingSystem,"Управляет отоплением в доме")
+Rel(Api,lightSystem,"Управляет светом в доме")
+Rel(Api,doorSystem,"Управляет воротами в доме")
+Rel(Api,surveillanceSystem,"Управляет системой наблюдения")
+Rel(Api,alert,"Отправляет уведомления")
+Rel(surveillanceSystem,Api,"Отправляет данные")
+
+@enduml

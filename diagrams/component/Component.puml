@@ -25,4 +25,5 @@ Rel(ScheduleController,ServiceLayer,"Calls business logic")
 Rel(PaymentController,ServiceLayer,"Calls business logic")
 Rel(ServiceLayer,RepositoryLayer,"Reads/Writes data")
 Rel(RepositoryLayer,Database,"Reads/Writes user data")
+
 @enduml
