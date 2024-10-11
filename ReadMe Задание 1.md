@@ -24,7 +24,7 @@
 - Домен 7: Датчики
 
 4. System Context diagram (PlantUML):
-![Context diagram](images\context as-is.png)
+![Context diagram](images/context as-is.png)
 
 
 ### Подзадание 1.2: Архитектура микросервисов
