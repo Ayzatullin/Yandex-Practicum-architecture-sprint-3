@@ -19,15 +19,15 @@ entity Home {
   id: INTEGER <<key>>
   User_id: INTEGER
   Address: STRING
-  Date_register: DATE
-  Last_update_date: DATE
+  Date_register: DATE_TIME
+  Last_update_date: DATE_TIME
 }
 
 entity Rooms {
   id: INTEGER <<key>>
   Home_id: INTEGER
   Room_type_id : INTEGER
-  Date_add : DATE
+  Date_add : DATE_TIME
 }
 
 entity RoomType {
@@ -43,8 +43,17 @@ entity Device {
   Room_id: INTEGER
   Serial_number: NUMERIC
   Status: STRING
+  Date_time_update: DATE_TIME
   HealthCheck: BOOLEAN
-  Date_add: DATE
+  Date_add: DATE_TIME
+  action_id: INTEGER
+}
+
+entity Action {
+  id: INTEGER <<key>>
+  Name: STRING
+  description: STRING
+  type: STRING
 }
 
 entity DeviceType {
@@ -58,15 +67,15 @@ entity Telemetry {
   device_id: INTEGER
   Home_id: INTEGER
   Room_id: INTEGER
-  created_date_time: DATE
-  updated_date_time: DATE
+  created_date_time: DATE_TIME
+  updated_date_time: DATE_TIME
   value: NUMERIC
 }
 
 entity Messages {
   id: INTEGER <<key>>
   type: STRING
-  Send_date: DATE
+  Send_date: DATE_TIME
   Status: STRING
   Text: STRING
   User_id: INTEGER
@@ -114,10 +123,15 @@ relationship DEVICE_TYPE  {
 DEVICE_TYPE -1- Rooms
 DEVICE_TYPE -1- DeviceType
 
-relationship DEVICE_DATE  {
+relationship DEVICE_ACTIONS  {
 }
-DEVICE_DATE -1- Device
-DEVICE_DATE -1- Telemetry
+DEVICE_ACTIONS -1- Device
+DEVICE_ACTIONS -1- Action
+
+relationship DEVICE_DATA  {
+}
+DEVICE_DATA -1- Device
+DEVICE_DATA -1- Telemetry
 
 relationship MESSAGES_SEND  {
 }

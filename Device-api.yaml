@@ -1,0 +1,238 @@
+openapi: 3.0.3
+info:
+  title: Swagger SmartHome - OpenAPI 1.0
+  description: |-
+    Описание API для микросервиса «Управление устройствами» системы SmartHome.
+    Задача микросервиса управлять устройствами в соответствии с задачами Пользователя.
+  contact:
+    email: ilnur@smarthome.ru
+  version: 1.0.0
+servers:
+  - url: https://smarthome.ru/api/v1
+tags:
+  - name: devices
+    description: Устройства умного дома
+paths:
+  /devices/{device_id}:
+    get:
+      tags:
+        - devices
+      summary: Получить данные по устройству
+      description: Получить данных устройства
+      operationId: getDeviceById
+      parameters:
+        - name: device_id
+          in: path
+          description: ID of device
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/devices'          
+        '400':
+          description: Не верный номер устройства
+        '404':
+          description: Устройство не найдено
+        '500':
+          description: Ошибка на сервере
+        '502':
+          description: Ошибочный шлюз
+          
+  /devices/{device_id}/status:
+    put:
+      tags:
+        - devices
+      summary: Статус устройства
+      description: Обновление статуса устройства
+      operationId: editDeviceStatus
+      parameters:
+        - name: device_id
+          in: path
+          description: ID of device
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: status
+          in: query
+          description: Статус устройства меняется от состояния системы и статуса выполнения задач
+          required: true
+          schema:
+            type: string
+            default: Ожидает команду
+            enum:
+              - Включен
+              - Отключен
+              - Ожидает команду
+              - Не исправен
+              - Требуется обслуживание
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/device_status'          
+        '400':
+          description: Не верный статус или номер устройства
+        '404':
+          description: Устройство не найдено
+        '500':
+          description: Ошибка на сервере
+        '502':
+          description: Ошибочный шлюз
+          
+  /devices/{device_id}/commands:
+    post:
+      tags:
+        - devices
+      summary: Команда устройству  
+      description: Отправка команды устройству
+      operationId: startCommand
+      parameters:
+        - name: device_id
+          in: path
+          description: ID of device
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                $ref: '#/components/schemas/command'
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/commandAdd'  
+        '400':
+          description: Не верный номер устройства
+        '404':
+          description: Не найдено
+        '500':
+          description: Ошибка на сервере
+        '502':
+          description: Ошибочный шлюз
+components:
+  schemas:
+    devices:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        Type_id:
+          type: integer
+          format: int32
+          example: 2
+        Home_id:
+          type: integer
+          format: int32
+          example: 123
+        Room_id:
+          type: integer
+          format: int32
+          example: 1
+        Serial_number:
+          type: string
+          example: 755-446-789
+        Status:
+          type: string
+          example: Включен
+        HealthCheck:
+          type: boolean
+          example: 1
+        Date_add:
+          type: string
+          example: '2024-12-01 12:00:00'
+      xml:
+        name: devices
+    device_status:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        Type_id:
+          type: integer
+          format: int32
+          example: 2
+        Home_id:
+          type: integer
+          format: int32
+          example: 123
+        Room_id:
+          type: integer
+          format: int32
+          example: 1
+        Status:
+          type: string
+          example: Включен
+        Date_time_update:
+          type: string
+          example: '2024-12-01 12:00:00'
+      xml:
+        name: device_status
+    command:
+      type: object
+      properties:
+        device_id:
+          type: integer
+          format: int64
+          example: 10
+        Home_id:
+          type: integer
+          format: int32
+          example: 123
+        Room_id:
+          type: integer
+          format: int32
+          example: 1
+        Action_id:
+          type: integer
+          format: int32
+          example: 1
+      xml:
+        name: command
+        
+    commandAdd:
+      type: object
+      properties:
+        device_id:
+          type: integer
+          format: int64
+          example: 10
+        Action_id:
+          type: integer
+          format: int32
+          example: 1
+        Start_date_time:
+          type: string
+          example: "2024-12-01 10:01:00"
+      xml:
+        name: commandAdd
+  requestBodies:
+    command:
+      description: Отправка команды для устройства
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/command'
