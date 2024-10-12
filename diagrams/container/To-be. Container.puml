@@ -12,9 +12,7 @@ System(SmartHome, "SmartHome System", "Система умного дома")
 System_Boundary(DeviceOut, "DeviceOut") {
   System_Ext(Devices, "Devices", "Устройства управления системами дома")
 }
-System_Boundary(SensorOut, "SensorOut") {
-  System_Ext(Sensors, "Sensors", "Датчики температуры, света")
-}
+
 System_Boundary(AlertOut, "AlertOut") {
   System_Ext(Alert, "Alerts", "Отправка push и sms")
 }
@@ -32,10 +30,10 @@ Rel_D(WebApps, Api,"Запросы на управление домом")
 Rel_D(Monitoring, Api,"Собирает данные о состоянии системы")
 
 Rel_D(Api,Database,"Чтение/запись данных")
-Rel_R(Sensors, Api, "Отправка телеметрии")
+Rel_R(Devices, Api, "Отправка телеметрии")
 
 Rel_L(Api,Devices,"Управляет устройствами в доме")
-Rel(Api,Alert,"Отправляет уведомления")
+Rel_R(Api,Alert,"Отправляет уведомления")
 
 
 @enduml

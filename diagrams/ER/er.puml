@@ -10,6 +10,7 @@ entity User {
         LastName: STRING
         }
   BirthDate: DATE
+  Owner_status: BOOLEAN
   Phone: NUMERIC
   Email: STRING
 }
@@ -52,21 +53,14 @@ entity DeviceType {
   Description: STRING
 }
 
-entity Sensor {
+entity Telemetry {
   id: INTEGER <<key>>
-  Type_id: INTEGER
+  device_id: INTEGER
   Home_id: INTEGER
   Room_id: INTEGER
-  Serial_number: NUMERIC
-  Status: STRING
-  HealthCheck: BOOLEAN
-  Date_add: DATE
-}
-
-entity SensorType {
-  id: INTEGER <<key>>
-  Name: STRING
-  Description: STRING
+  created_date_time: DATE
+  updated_date_time: DATE
+  value: NUMERIC
 }
 
 entity Messages {
@@ -77,30 +71,26 @@ entity Messages {
   Text: STRING
   User_id: INTEGER
   Device_id: INTEGER
+  MessageType {
+    id: INTEGER <<key>>
+    Name: STRING
+    Description: STRING
+  }
+  MessageStatus {
+    id: INTEGER <<key>>
+    Name: STRING
+    Description: STRING
+  }
 }
 
-entity MessageType {
-  id: INTEGER <<key>>
-  Name: STRING
-  Description: STRING
+
+relationship HOME_USERS  {
 }
-
-entity MessageStatus {
-  id: INTEGER <<key>>
-  Name: STRING
-  Description: STRING
-}
-
-relationship OWNER  {
-}
-
-OWNER -1- User
-OWNER =N= Home
-
+HOME_USERS =N= User
+HOME_USERS =N= Home
 
 relationship ROOMS_BELONG  {
 }
-
 ROOMS_BELONG -1- Home
 ROOMS_BELONG =N= Rooms
 
@@ -108,13 +98,11 @@ relationship ROOM_DEVICES  {
 }
 ROOM_DEVICES -1- Rooms
 ROOM_DEVICES =N= Device
-ROOM_DEVICES =N= Sensor
 
 relationship HOMES_DEVICES  {
 }
 HOMES_DEVICES -1- Home
 HOMES_DEVICES =N= Device
-HOMES_DEVICES =N= Sensor
 
 relationship ROOM_TYPE  {
 }
@@ -126,10 +114,10 @@ relationship DEVICE_TYPE  {
 DEVICE_TYPE -1- Rooms
 DEVICE_TYPE -1- DeviceType
 
-relationship SENSOR_TYPE  {
+relationship DEVICE_DATE  {
 }
-SENSOR_TYPE -1- Rooms
-SENSOR_TYPE -1- SensorType
+DEVICE_DATE -1- Device
+DEVICE_DATE -1- Telemetry
 
 relationship MESSAGES_SEND  {
 }
@@ -137,16 +125,6 @@ MESSAGES_SEND -1- User
 MESSAGES_SEND -1- Device
 MESSAGES_SEND =N= Messages
 
-
-relationship MESSAGE_TYPE  {
-}
-MESSAGE_TYPE -1- Messages
-MESSAGE_TYPE -1- MessageType
-
-relationship MESSAGE_STATUS  {
-}
-MESSAGE_STATUS -1- Messages
-MESSAGE_STATUS -1- MessageStatus
 
 @endchen
 @enduml

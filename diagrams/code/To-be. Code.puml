@@ -22,7 +22,7 @@ class Room {
   +String type
   +Date date_add
   +Integer device_id
-  +Integer sensor_id
+  +Numeric device_count
   +void add()
   +void edit()
   +void delete()
@@ -39,19 +39,9 @@ class Device {
   +void delete()
 }
 
-class Sensor {
-  +Integer id
-  +String type
-  +Numeric serial_number
-  +Boolean healthCheck
-  +Date date_add
-  +void add()
-  +void edit()
-  +void delete()
-}
 
 Home "1" -- "0..*" Room : includes
 Room "1" -- "0..*" Device : has
-Room "1" -- "0..*" Sensor : has
+
 
 @enduml

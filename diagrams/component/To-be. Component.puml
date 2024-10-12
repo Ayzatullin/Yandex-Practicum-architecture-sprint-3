@@ -45,14 +45,10 @@ Container(AlertIn, "AlertIn") {
 System_Boundary(DeviceOut, "DeviceOut") {
   System_Ext(Devices, "Devices", "Устройства управления системами дома")
 }
-System_Boundary(SensorOut, "SensorOut") {
-  System_Ext(Sensors, "Sensors", "Датчики температуры, света")
-}
+
 System_Boundary(AlertOut, "AlertOut") {
   System_Ext(Alert, "Alerts", "Отправка push и sms")
 }
-
-
 
 Rel(WebApps,ApiGateway,"Запросы на выполнение действий")
 
@@ -71,7 +67,7 @@ Rel_L(DeviceCrl, TelemetryCrl, "REST", "Запрашивает данные по
 
 Rel_D(DeviceCrl, RabbitMQ, "REST", "Отправляет изменные статусы устройств")
 Rel_U(AlertCrl, RabbitMQ, "ASync", "Вычитывает сообщения")
-Rel_L(Sensors, Kafka, "Async", "Запись логов событий и состояний")
+Rel_L(Devices, Kafka, "Async", "Запись логов событий и состояний")
 Rel_L(TelemetryCrl, Kafka, "Async", "Забирает данные логов")
 
 
