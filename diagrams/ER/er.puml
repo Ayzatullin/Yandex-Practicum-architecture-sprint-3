@@ -4,21 +4,149 @@
 @startchen
 
 entity User {
-  Number <<key>>
-  Name
+  id: INTEGER <<key>>
+  Name {
+        FirstName: STRING
+        LastName: STRING
+        }
+  BirthDate: DATE
+  Phone: NUMERIC
+  Email: STRING
 }
 
-entity Home <<weak>> {
-  Name <<key>>
-  Age
+entity Home {
+  id: INTEGER <<key>>
+  User_id: INTEGER
+  Address: STRING
+  Date_register: DATE
+  Last_update_date: DATE
 }
 
-relationship OWNER_OF <<identifying>> {
+entity Rooms {
+  id: INTEGER <<key>>
+  Home_id: INTEGER
+  Room_type_id : INTEGER
+  Date_add : DATE
 }
 
-OWNER_OF -1- User
-OWNER_OF =N= Home
+entity RoomType {
+  id: INTEGER <<key>>
+  Name: STRING
+}
+
+
+entity Device {
+  id: INTEGER <<key>>
+  Type_id: INTEGER
+  Home_id: INTEGER
+  Room_id: INTEGER
+  Serial_number: NUMERIC
+  Status: STRING
+  HealthCheck: BOOLEAN
+  Date_add: DATE
+}
+
+entity DeviceType {
+  id: INTEGER <<key>>
+  Name: STRING
+  Description: STRING
+}
+
+entity Sensor {
+  id: INTEGER <<key>>
+  Type_id: INTEGER
+  Home_id: INTEGER
+  Room_id: INTEGER
+  Serial_number: NUMERIC
+  Status: STRING
+  HealthCheck: BOOLEAN
+  Date_add: DATE
+}
+
+entity SensorType {
+  id: INTEGER <<key>>
+  Name: STRING
+  Description: STRING
+}
+
+entity Messages {
+  id: INTEGER <<key>>
+  type: STRING
+  Send_date: DATE
+  Status: STRING
+  Text: STRING
+  User_id: INTEGER
+  Device_id: INTEGER
+}
+
+entity MessageType {
+  id: INTEGER <<key>>
+  Name: STRING
+  Description: STRING
+}
+
+entity MessageStatus {
+  id: INTEGER <<key>>
+  Name: STRING
+  Description: STRING
+}
+
+relationship OWNER  {
+}
+
+OWNER -1- User
+OWNER =N= Home
+
+
+relationship ROOMS_BELONG  {
+}
+
+ROOMS_BELONG -1- Home
+ROOMS_BELONG =N= Rooms
+
+relationship ROOM_DEVICES  {
+}
+ROOM_DEVICES -1- Rooms
+ROOM_DEVICES =N= Device
+ROOM_DEVICES =N= Sensor
+
+relationship HOMES_DEVICES  {
+}
+HOMES_DEVICES -1- Home
+HOMES_DEVICES =N= Device
+HOMES_DEVICES =N= Sensor
+
+relationship ROOM_TYPE  {
+}
+ROOM_TYPE -1- Rooms
+ROOM_TYPE -1- RoomType
+
+relationship DEVICE_TYPE  {
+}
+DEVICE_TYPE -1- Rooms
+DEVICE_TYPE -1- DeviceType
+
+relationship SENSOR_TYPE  {
+}
+SENSOR_TYPE -1- Rooms
+SENSOR_TYPE -1- SensorType
+
+relationship MESSAGES_SEND  {
+}
+MESSAGES_SEND -1- User
+MESSAGES_SEND -1- Device
+MESSAGES_SEND =N= Messages
+
+
+relationship MESSAGE_TYPE  {
+}
+MESSAGE_TYPE -1- Messages
+MESSAGE_TYPE -1- MessageType
+
+relationship MESSAGE_STATUS  {
+}
+MESSAGE_STATUS -1- Messages
+MESSAGE_STATUS -1- MessageStatus
 
 @endchen
-
 @enduml
