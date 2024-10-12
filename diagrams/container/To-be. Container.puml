@@ -9,32 +9,33 @@ Person(admin, "Admin", "Сотрудник SmartHome")
 
 System(SmartHome, "SmartHome System", "Система умного дома")
 
-System_Ext(heatingSystem, "Heating System", "Система отопления")
-System_Ext(lightSystem, "Light System", "Система упавления светом")
-System_Ext(doorSystem, "Door System", "Система управления воротами")
-System_Ext(surveillanceSystem, "Video surveillance System", "Система видеонаблюдения")
-System_Ext(sensor, "Sensors", "Датчики температуры, света")
-System_Ext(alert, "Push and sms", "Отправка push и сообщений")
-
-Container_Boundary(SmartHome, "SmartHome System") {
-  Container(WebApps, "Web Application", "Some language", "Обрабатывает запросы, взаимодействует с User")
-  Container(Monitoring, "Monitoring System", "Grafana", "Сбор данных, выявление проблем и ошибок")
-  Container(Api, "API Application", "Java", "Управляет системами и сбором данных")
-  Container(Database, "Database", "PostgreSQL", "Содержит все данные о состоянии систем и датчиков")
+System_Boundary(DeviceOut, "DeviceOut") {
+  System_Ext(Devices, "Devices", "Устройства управления системами дома")
+}
+System_Boundary(SensorOut, "SensorOut") {
+  System_Ext(Sensors, "Sensors", "Датчики температуры, света")
+}
+System_Boundary(AlertOut, "AlertOut") {
+  System_Ext(Alert, "Alerts", "Отправка push и sms")
 }
 
-Rel(user, WebApps, "Отправляет запросы на управлением домом")
-Rel(admin, Monitoring,"Следит за состоянием системы")
-Rel(WebApps, Api,"Отправляет http запросы на изменение системы")
-Rel(Monitoring, Api,"Собирает данные о состоянии системы")
-Rel(sensor, Api, "Отправка замеров/данных")
+Container_Boundary(SmartHome, "SmartHome System") {
+  Container(WebApps, "Web Application", "", "Обрабатывает запросы, взаимодействует с User")
+  Container(Monitoring, "Monitoring System", "Grafana", "Сбор данных, выявление проблем и ошибок")
+  Container(Api, "API Application", "Java", "Управляет системами и сбором данных")
+  Container(Database, "Databases", "", "Хранение и обработка состояний, устройств,датчиков")
+}
 
-Rel(Api,Database,"Отправляет запросы на чтение/запись данных")
-Rel(Api,heatingSystem,"Управляет отоплением в доме")
-Rel(Api,lightSystem,"Управляет светом в доме")
-Rel(Api,doorSystem,"Управляет воротами в доме")
-Rel(Api,surveillanceSystem,"Управляет системой наблюдения")
-Rel(Api,alert,"Отправляет уведомления")
-Rel(surveillanceSystem,Api,"Отправляет данные")
+Rel_D(user, WebApps, "Отправляет запросы на управлением домом")
+Rel_D(admin, Monitoring,"Следит за состоянием системы SmartHome")
+Rel_D(WebApps, Api,"Запросы на управление домом")
+Rel_D(Monitoring, Api,"Собирает данные о состоянии системы")
+
+Rel_D(Api,Database,"Чтение/запись данных")
+Rel_R(Sensors, Api, "Отправка телеметрии")
+
+Rel_L(Api,Devices,"Управляет устройствами в доме")
+Rel(Api,Alert,"Отправляет уведомления")
+
 
 @enduml

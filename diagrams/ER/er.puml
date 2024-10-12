@@ -1,0 +1,24 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+@startchen
+
+entity User {
+  Number <<key>>
+  Name
+}
+
+entity Home <<weak>> {
+  Name <<key>>
+  Age
+}
+
+relationship OWNER_OF <<identifying>> {
+}
+
+OWNER_OF -1- User
+OWNER_OF =N= Home
+
+@endchen
+
+@enduml

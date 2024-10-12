@@ -58,11 +58,17 @@
 ### Подзадание 1.2: Архитектура микросервисов
 
 C4 — Уровень контейнеров (Containers)
+
 ![Container diagram](images/container to-be.png)
 
 C4 — Уровень компонентов (Components)
 
+![Container diagram](images/component to-be.png)
+
 C4 — Уровень кода (Code)
+
+![Container diagram](images/code to_be.png)
+
 
 ### Подзадание 1.3: ER-диаграмма
 
