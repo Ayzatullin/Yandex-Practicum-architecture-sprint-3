@@ -1,0 +1,325 @@
+openapi: 3.0.3
+info:
+  title: Swagger SmartHome - OpenAPI 1.0
+  description: |-
+    Описание API для микросервиса «Телеметрия» системы SmartHome.
+    Задача микросервиса - управлять и обрабатывать данные с устройств умного дома.
+  contact:
+    email: ilnur@smarthome.ru
+  version: 1.0.0
+servers:
+  - url: https://smarthome.ru/api/v1
+tags:
+  - name: telemetry
+    description: Данные с датчиков
+paths:
+  /telemetry_devices:
+    post:
+      tags:
+        - telemetry_devices
+      summary: Добавление нового устройства получения телеметрии
+      description: Добавление нового устройства получения телеметрии
+      operationId: addTelemetryDevice
+      requestBody:
+        description: Создание нового устройства получения телеметрии
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/telemetrydeviceAdd'
+        required: true
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/telemetrydevice'          
+        '400':
+          description: Неправильный, некорректный запрос 
+        '500':
+          description: Ошибка на сервере
+        '502':
+          description: Ошибочный шлюз
+
+  /telemetry_devices/{telemetry_device_id}:
+    get:
+      tags:
+        - telemetry_devices
+      summary: Получить инфо по устройству телеметрии
+      description: Получить инфо устройства телеметрии
+      operationId: getTelemetryDeviceById
+      parameters:
+        - name: telemetry_device_id
+          in: path
+          description: ID of telemetry device
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/telemetrydevice'          
+        '400':
+          description: Не верный номер устройства
+        '404':
+          description: Устройство не найдено
+        '500':
+          description: Ошибка на сервере
+        '502':
+          description: Ошибочный шлюз
+    put:
+      tags:
+        - telemetry_devices
+      summary: Обновление данных устройства
+      description: Обновление данных устройства
+      operationId: updateTelemetryDevice
+      requestBody:
+        description: Обновление данных устройства
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/telemetrydeviceAdd'
+        required: true
+      parameters:
+        - name: telemetry_device_id
+          in: path
+          description: ID of telemetry device
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/telemetrydevice'          
+        '400':
+          description: Не верный номер устройства
+        '404':
+          description: Устройство не найдено
+        '500':
+          description: Ошибка на сервере
+        '502':
+          description: Ошибочный шлюз          
+    delete:
+      tags:
+        - telemetry_devices
+      summary: Удаление устройства получения телеметрии
+      description: Удаление устройства получения телеметрии
+      operationId: deleteTelemetryDevice
+      parameters:
+        - name: telemetry_device_id
+          in: path
+          description: ID of telemetry device
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Успешная операция
+        '400':
+          description: Не верный номер устройства
+        '404':
+          description: Устройство не найдено
+        '500':
+          description: Ошибка на сервере
+        '502':
+          description: Ошибочный шлюз
+          
+  /devices/{device_id}/telemetry/{telemetry_device_id}/latest:
+    get:
+      tags:
+        - telemetry
+      summary: Получить телеметрию с датчика
+      description: Получение последних данных телеметрии
+      operationId: getLatestTelemetry
+      parameters:
+        - name: device_id
+          in: path
+          description: ID of device
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: telemetry_device_id
+          in: path
+          description: ID of telemetry device
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/telemetry'          
+        '400':
+          description: Не верный номер устройства
+        '404':
+          description: Устройство не найдено
+        '500':
+          description: Ошибка на сервере
+        '502':
+          description: Ошибочный шлюз
+          
+  /devices/{device_id}/telemetry/{telemetry_device_id}/{date_from}/{date_to}:
+    get:
+      tags:
+        - telemetry
+      summary: Получение телеметрию с датчика
+      description: Получение исторических данных телеметрии
+      operationId: editDeviceStatus
+      parameters:
+        - name: device_id
+          in: path
+          description: ID of device
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: telemetry_device_id
+          in: path
+          description: ID of telemetry device
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: date_from
+          in: path
+          description: Дата начала периода
+          required: true
+          schema:
+            type: string
+            example: "2024-01-01"
+        - name: date_to
+          in: path
+          description: Дата конца периода
+          required: true
+          schema:
+            type: string
+            example: "2024-03-31"
+      responses:
+        '200':
+          description: Успешная операция
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/telemetry'          
+        '400':
+          description: Не верный формат даты или номер устройства
+        '404':
+          description: Устройство не найдено
+        '500':
+          description: Ошибка на сервере
+        '502':
+          description: Ошибочный шлюз
+components:
+  schemas:
+    telemetry:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        device_id:
+          type: integer
+          format: int32
+          example: 2
+        Home_id:
+          type: integer
+          format: int32
+          example: 123
+        Room_id:
+          type: integer
+          format: int32
+          example: 1
+        created_date_time:
+          type: string
+          example: '2024-12-01 12:00:00'
+        value:
+          type: string
+          example: '20 градусов'
+      xml:
+        name: telemetry
+        
+    telemetrydeviceAdd:
+      type: object
+      properties:
+        Type_id:
+          type: integer
+          format: int32
+          example: 2
+        Home_id:
+          type: integer
+          format: int32
+          example: 123
+        Room_id:
+          type: integer
+          format: int32
+          example: 1
+        Serial_number:
+          type: string
+          example: 755-446-789
+        Status:
+          type: string
+          example: Включен
+      xml:
+        name: telemetrydeviceAdd
+        
+    telemetrydevice:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        Type_id:
+          type: integer
+          format: int32
+          example: 2
+        Home_id:
+          type: integer
+          format: int32
+          example: 123
+        Room_id:
+          type: integer
+          format: int32
+          example: 1
+        Serial_number:
+          type: string
+          example: 755-446-789
+        Status:
+          type: string
+          example: Включен
+        Date_time_update:
+          type: string
+          example: '2024-12-01 11:00:00'
+        HealthCheck:
+          type: boolean
+          example: 1
+        Date_add:
+          type: string
+          example: '2024-12-01 12:00:00'
+      xml:
+        name: telemetrydevice
+        
+  requestBodies:
+    deviceAdd:
+      description: Добавление нового устройства
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/telemetrydeviceAdd'
+

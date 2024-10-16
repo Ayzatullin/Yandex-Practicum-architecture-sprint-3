@@ -1,0 +1,144 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+@startchen
+
+entity User {
+  id: INTEGER <<key>>
+  Name {
+        FirstName: STRING
+        LastName: STRING
+        }
+  BirthDate: DATE
+  Owner_status: BOOLEAN
+  Phone: NUMERIC
+  Email: STRING
+}
+
+entity Home {
+  id: INTEGER <<key>>
+  User_id: INTEGER
+  Address: STRING
+  Date_register: DATE_TIME
+  Last_update_date: DATE_TIME
+}
+
+entity Rooms {
+  id: INTEGER <<key>>
+  Home_id: INTEGER
+  Room_type_id : INTEGER
+  Date_add : DATE_TIME
+}
+
+entity RoomType {
+  id: INTEGER <<key>>
+  Name: STRING
+}
+
+
+entity Device {
+  id: INTEGER <<key>>
+  Type_id: INTEGER
+  Home_id: INTEGER
+  Room_id: INTEGER
+  Serial_number: NUMERIC
+  Status: STRING
+  Date_time_update: DATE_TIME
+  HealthCheck: BOOLEAN
+  Date_add: DATE_TIME
+  action_id: INTEGER
+}
+
+entity Action {
+  id: INTEGER <<key>>
+  Name: STRING
+  description: STRING
+  type: STRING
+}
+
+entity DeviceType {
+  id: INTEGER <<key>>
+  Name: STRING
+  Description: STRING
+}
+
+entity Telemetry {
+  id: INTEGER <<key>>
+  device_id: INTEGER
+  Home_id: INTEGER
+  Room_id: INTEGER
+  created_date_time: DATE_TIME
+  updated_date_time: DATE_TIME
+  value: NUMERIC
+}
+
+entity Messages {
+  id: INTEGER <<key>>
+  type: STRING
+  Send_date: DATE_TIME
+  Status: STRING
+  Text: STRING
+  User_id: INTEGER
+  Device_id: INTEGER
+  MessageType {
+    id: INTEGER <<key>>
+    Name: STRING
+    Description: STRING
+  }
+  MessageStatus {
+    id: INTEGER <<key>>
+    Name: STRING
+    Description: STRING
+  }
+}
+
+
+relationship HOME_USERS  {
+}
+HOME_USERS =N= User
+HOME_USERS =N= Home
+
+relationship ROOMS_BELONG  {
+}
+ROOMS_BELONG -1- Home
+ROOMS_BELONG =N= Rooms
+
+relationship ROOM_DEVICES  {
+}
+ROOM_DEVICES -1- Rooms
+ROOM_DEVICES =N= Device
+
+relationship HOMES_DEVICES  {
+}
+HOMES_DEVICES -1- Home
+HOMES_DEVICES =N= Device
+
+relationship ROOM_TYPE  {
+}
+ROOM_TYPE -1- Rooms
+ROOM_TYPE -1- RoomType
+
+relationship DEVICE_TYPE  {
+}
+DEVICE_TYPE -1- Rooms
+DEVICE_TYPE -1- DeviceType
+
+relationship DEVICE_ACTIONS  {
+}
+DEVICE_ACTIONS -1- Device
+DEVICE_ACTIONS -1- Action
+
+relationship DEVICE_DATA  {
+}
+DEVICE_DATA -1- Device
+DEVICE_DATA -1- Telemetry
+
+relationship MESSAGES_SEND  {
+}
+MESSAGES_SEND -1- User
+MESSAGES_SEND -1- Device
+MESSAGES_SEND =N= Messages
+
+
+@endchen
+@enduml

@@ -1,20 +1,14 @@
 terraform {
   required_providers {
-    kubernetes = {
-      source = "hashicorp/kubernetes"
-      version = "2.31.0"
+    yandex = {
+      source = "yandex-cloud/yandex"
     }
   }
+  required_version = ">= 0.13"
 }
 
-provider "kubernetes" {
-    config_path    = "~/.kube/config"
-    config_context = "minikube"
+provider "yandex" {
+  zone = "<зона_доступности_по_умолчанию>"
 }
 
-provider "helm" {
-  kubernetes {
-    config_path    = "~/.kube/config"
-    config_context = "minikube"
-  }
-}
+

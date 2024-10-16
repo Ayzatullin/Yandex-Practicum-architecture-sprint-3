@@ -1,0 +1,47 @@
+@startuml
+title SmartHome "Home microservice" Code Diagram
+
+top to bottom direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+class Home {
+  +Integer id
+  +String address
+  +Integer user_id
+  +Integer room_id
+  +Date date_register
+  +Date last_update_date
+  +void register()
+  +void edit()
+  +void delete()
+}
+
+class Room {
+  +Integer id
+  +String type
+  +Date date_add
+  +Integer device_id
+  +Numeric device_count
+  +void add()
+  +void edit()
+  +void delete()
+}
+
+class Device {
+  +Integer id
+  +String type
+  +Numeric serial_number
+  +Boolean healthCheck
+  +Date date_add
+  +void add()
+  +void edit()
+  +void delete()
+}
+
+
+Home "1" -- "0..*" Room : includes
+Room "1" -- "0..*" Device : has
+
+
+@enduml
